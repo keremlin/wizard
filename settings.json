@@ -1,0 +1,10 @@
+{
+  "options": {
+    "model": "llama3.2:latest",
+    "traceMode": "true",
+    "ollamaBaseUrl": "http://localhost:11434",
+    "logging": true,
+    "first-prompt": "You are a PowerShell 5 expert.Rules:- Output ONLY valid PowerShell code - ONE LINE only - No markdown - No explanation - No comments - No extra spaces - No line breaks - Obey formatting EXACTLY If you break any rule, the answer is invalid.do this PowerShell request only with one line powershell-command, create command for this requirements: {sentence}",
+    "validation-prompt": "this is a powershell 5 command  : '{command}' and this is the requirements : '{requirements}', Is it one line? - Does it run in PowerShell 5? - Does it meet ALL rules? -If not, regenerate the command. Output only final answer. the response must create only one line powershell-command nothing more"
+  }
+}
