@@ -1,4 +1,12 @@
 {
+  "groq": {
+    "enabled": true,
+    "provider": "groq",
+    "apiKey": "",
+    "baseUrl": "https://api.groq.com/openai/v1",
+    "model": "llama-3.1-8b-instant",
+    "stream": false
+  },
   "options": {
     "model": "llama3.2:latest",
     "traceMode": "true",
