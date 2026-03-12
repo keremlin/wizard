@@ -15,8 +15,10 @@ namespace Wizard
         private const string DefaultOllamaBaseUrl = "http://localhost:11434"; // Fallback if settings.json is not found
         private const string DefaultModel = "llama3.2:latest"; // Fallback if settings.json is not found
         private const string SettingsFileName = "settings.json";
-        private const string Version = "1.0.0";
+        private const string Version = "1.0.1";
         private const string LogFileName = "wizard.log";
+        private const string BlacklistFileName = "blacklist.json";
+        private const string YellowlistFileName = "yellowlist.json";
         private static string? logFilePath = null;
         private static bool loggingEnabled = false;
 
@@ -34,11 +36,25 @@ namespace Wizard
                 return 0;
             }
 
+            if (args.Length > 0 && args[0] == "-bl")
+            {
+                ShowCommandList(BlacklistFileName, "Blacklist");
+                return 0;
+            }
+
+            if (args.Length > 0 && args[0] == "-yl")
+            {
+                ShowCommandList(YellowlistFileName, "Yellowlist");
+                return 0;
+            }
+
             if (args.Length == 0)
             {
                 Console.WriteLine("Usage: wizard <natural language command>");
                 Console.WriteLine("       wizard -version");
                 Console.WriteLine("       wizard -config");
+                Console.WriteLine("       wizard -bl");
+                Console.WriteLine("       wizard -yl");
                 Console.WriteLine("Example: wizard list all process which has processName like ja");
                 return 1;
             }
@@ -190,6 +206,34 @@ namespace Wizard
                     return 1;
                 }
 
+                // Step 4: Check command against blacklist and yellowlist
+                var (checkResult, checkEntry) = CheckCommandSafety(finalCommand);
+                if (checkResult == "blocked")
+                {
+                    string firstToken = finalCommand.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
+                    Console.Error.WriteLine($"[BLOCKED] '{firstToken}' is a blacklisted command and cannot be executed.");
+                    Console.Error.WriteLine($"Reason: {checkEntry?.Reason}");
+                    WriteLog($"Command blocked by blacklist: {finalCommand}");
+                    return 1;
+                }
+
+                if (checkResult == "warn")
+                {
+                    string firstToken = finalCommand.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
+                    Console.WriteLine($"[WARNING] '{firstToken}' is a potentially dangerous command.");
+                    Console.WriteLine($"Description: {checkEntry?.Desc}");
+                    Console.WriteLine($"Reason: {checkEntry?.Reason}");
+                    Console.WriteLine($"Command to execute: {finalCommand}");
+                    Console.Write("Do you want to proceed? (y/N): ");
+                    string? answer = Console.ReadLine();
+                    if (answer?.Trim().ToLowerInvariant() != "y")
+                    {
+                        Console.WriteLine("Execution cancelled.");
+                        WriteLog($"Command cancelled by user (yellowlist): {finalCommand}");
+                        return 1;
+                    }
+                }
+
                 Console.WriteLine($"Executing: {finalCommand}");
                 Console.WriteLine();
 
@@ -219,6 +263,55 @@ namespace Wizard
         // Default prompts
         private const string DefaultFirstPrompt = "You are a PowerShell 5 expert.Rules:- Output ONLY valid PowerShell code - ONE LINE only - No markdown - No explanation - No comments - No extra spaces - No line breaks - Obey formatting EXACTLY If you break any rule, the answer is invalid.do this PowerShell request only with one line powershell-command, create command for this requirements: {sentence}";
         private const string DefaultValidationPrompt = "this is a powershell 5 command  : '{command}' and this is the requirements : '{requirements}', Is it one line? - Does it run in PowerShell 5? - Does it meet ALL rules? -If not, regenerate the command. Output only final answer. the response must create only one line powershell-command nothing more";
+
+        static Dictionary<string, CommandEntry> LoadCommandList(string fileName)
+        {
+            try
+            {
+                string filePath = fileName;
+                if (!File.Exists(filePath))
+                {
+                    string? exeDir = AppContext.BaseDirectory;
+                    if (!string.IsNullOrEmpty(exeDir))
+                        filePath = Path.Combine(exeDir, fileName);
+                }
+
+                if (!File.Exists(filePath))
+                    return new Dictionary<string, CommandEntry>();
+
+                string json = File.ReadAllText(filePath);
+                var entries = JsonConvert.DeserializeObject<List<CommandEntry>>(json);
+                if (entries == null)
+                    return new Dictionary<string, CommandEntry>();
+
+                var dict = new Dictionary<string, CommandEntry>(StringComparer.OrdinalIgnoreCase);
+                foreach (var entry in entries)
+                {
+                    if (!string.IsNullOrWhiteSpace(entry.Command))
+                        dict[entry.Command] = entry;
+                }
+                return dict;
+            }
+            catch
+            {
+                return new Dictionary<string, CommandEntry>();
+            }
+        }
+
+        static (string result, CommandEntry? entry) CheckCommandSafety(string command)
+        {
+            string firstToken = command.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
+
+            var blacklist = LoadCommandList(BlacklistFileName);
+            if (blacklist.TryGetValue(firstToken, out var blackEntry))
+                return ("blocked", blackEntry);
+
+            var yellowlist = LoadCommandList(YellowlistFileName);
+            if (yellowlist.TryGetValue(firstToken, out var yellowEntry))
+                return ("warn", yellowEntry);
+
+            return ("ok", null);
+        }
 
         static void WriteLog(string message)
         {
@@ -502,6 +595,24 @@ namespace Wizard
             }
         }
 
+        static void ShowCommandList(string fileName, string title)
+        {
+            var entries = LoadCommandList(fileName);
+            if (entries.Count == 0)
+            {
+                Console.WriteLine($"{fileName} not found or is empty.");
+                return;
+            }
+
+            Console.WriteLine($"=== {title} ({entries.Count} commands) ===");
+            Console.WriteLine();
+            foreach (var entry in entries.Values)
+            {
+                Console.WriteLine($"  {entry.Command}");
+            }
+            Console.WriteLine();
+        }
+
         static void ShowConfig()
         {
             Console.WriteLine("=== Wizard Configuration ===");
@@ -633,6 +744,11 @@ namespace Wizard
                 // Clean the response - remove markdown code blocks and trim
                 string cleanedResponse = rawResponse.Trim();
 
+                // Strip <think>...</think> blocks from reasoning models (e.g. Qwen3)
+                int thinkEnd = cleanedResponse.LastIndexOf("</think>");
+                if (thinkEnd >= 0)
+                    cleanedResponse = cleanedResponse.Substring(thinkEnd + 8).Trim();
+
                 if (cleanedResponse.StartsWith("```powershell"))
                 {
                     cleanedResponse = cleanedResponse.Substring(13);
@@ -704,6 +820,11 @@ namespace Wizard
 
                 // Clean the response
                 string cleanedResponse = rawResponse.Trim();
+
+                // Strip <think>...</think> blocks from reasoning models (e.g. Qwen3)
+                int thinkEnd = cleanedResponse.LastIndexOf("</think>");
+                if (thinkEnd >= 0)
+                    cleanedResponse = cleanedResponse.Substring(thinkEnd + 8).Trim();
 
                 if (cleanedResponse.StartsWith("```powershell"))
                 {
@@ -975,6 +1096,16 @@ namespace Wizard
                 return 1;
             }
         }
+    }
+
+    class CommandEntry
+    {
+        [JsonProperty("command")]
+        public string? Command { get; set; }
+        [JsonProperty("desc")]
+        public string? Desc { get; set; }
+        [JsonProperty("reason")]
+        public string? Reason { get; set; }
     }
 
     // Response classes for JSON deserialization

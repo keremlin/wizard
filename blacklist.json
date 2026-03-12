@@ -1,0 +1,202 @@
+[
+  {
+    "command": "Restart-Computer",
+    "desc": "Restarts the local or a remote computer",
+    "reason": "Causes immediate system restart, interrupting all running processes and unsaved work"
+  },
+  {
+    "command": "Stop-Computer",
+    "desc": "Shuts down the local or a remote computer",
+    "reason": "Causes immediate shutdown with no recovery path from within the session"
+  },
+  {
+    "command": "Reset-Computer",
+    "desc": "Resets the computer to a previous state",
+    "reason": "Can trigger system restore or factory reset, causing data loss"
+  },
+  {
+    "command": "shutdown",
+    "desc": "CMD command to shut down or restart the system",
+    "reason": "Directly shuts down or restarts Windows, bypassing any OS safety checks"
+  },
+  {
+    "command": "regedit",
+    "desc": "Opens the Windows Registry Editor GUI",
+    "reason": "Provides unrestricted read/write access to the Windows Registry"
+  },
+  {
+    "command": "reg",
+    "desc": "CMD tool for reading and writing the Windows Registry",
+    "reason": "Can add, delete, import, or overwrite any registry key including critical system entries"
+  },
+  {
+    "command": "Set-ItemProperty",
+    "desc": "Sets the value of a property for an item, commonly used on registry paths",
+    "reason": "Directly modifies registry values and file properties, can corrupt system configuration"
+  },
+  {
+    "command": "Remove-ItemProperty",
+    "desc": "Deletes a property and its value from an item (e.g., registry key)",
+    "reason": "Permanently removes registry properties, can break application or OS configuration"
+  },
+  {
+    "command": "New-ItemProperty",
+    "desc": "Creates a new property for an item and sets its value",
+    "reason": "Can create registry entries that alter OS or application behavior at startup or runtime"
+  },
+  {
+    "command": "Format-Volume",
+    "desc": "Formats a volume with a specified file system",
+    "reason": "Irreversibly erases all data on the target volume"
+  },
+  {
+    "command": "Clear-Disk",
+    "desc": "Cleans an entire disk by removing all partition information",
+    "reason": "Wipes partition table from the disk, causing total data loss"
+  },
+  {
+    "command": "Initialize-Disk",
+    "desc": "Initializes a disk for use by Windows",
+    "reason": "Overwrites disk partition structure, destroying existing data"
+  },
+  {
+    "command": "diskpart",
+    "desc": "CMD disk partitioning tool",
+    "reason": "Can create, delete, or format partitions and volumes with no undo option"
+  },
+  {
+    "command": "bcdedit",
+    "desc": "CMD tool to edit the Boot Configuration Data store",
+    "reason": "Modifying boot entries can render the system unbootable"
+  },
+  {
+    "command": "bootrec",
+    "desc": "CMD tool to repair the master boot record and boot sector",
+    "reason": "Incorrect use can destroy the boot record, making the system unbootable"
+  },
+  {
+    "command": "Set-ExecutionPolicy",
+    "desc": "Changes the PowerShell script execution policy",
+    "reason": "Disabling execution restrictions allows unsigned or malicious scripts to run"
+  },
+  {
+    "command": "Invoke-Expression",
+    "desc": "Evaluates and runs a string as a PowerShell command",
+    "reason": "Executes arbitrary code from a string, a common vector for injection attacks"
+  },
+  {
+    "command": "IEX",
+    "desc": "Alias for Invoke-Expression",
+    "reason": "Same risk as Invoke-Expression; frequently used in obfuscated malicious scripts"
+  },
+  {
+    "command": "net",
+    "desc": "CMD utility covering user, group, service, and share management",
+    "reason": "Can add/remove users, change passwords, manage groups, and control services"
+  },
+  {
+    "command": "Add-LocalUser",
+    "desc": "Creates a new local user account",
+    "reason": "Can be used to create unauthorized accounts for persistent access"
+  },
+  {
+    "command": "Remove-LocalUser",
+    "desc": "Deletes a local user account",
+    "reason": "Permanently removes a user account and access, potentially locking out legitimate users"
+  },
+  {
+    "command": "Set-LocalUser",
+    "desc": "Modifies a local user account (password, description, expiration)",
+    "reason": "Can change passwords and disable accounts, causing loss of access"
+  },
+  {
+    "command": "Add-LocalGroupMember",
+    "desc": "Adds a member to a local security group",
+    "reason": "Can grant administrator or other elevated privileges to any account"
+  },
+  {
+    "command": "Remove-LocalGroupMember",
+    "desc": "Removes a member from a local security group",
+    "reason": "Can revoke access for legitimate users from critical groups"
+  },
+  {
+    "command": "Remove-Service",
+    "desc": "Permanently deletes a Windows service",
+    "reason": "Irreversibly removes a service registration; can disable critical system services"
+  },
+  {
+    "command": "sc",
+    "desc": "CMD Service Controller — creates, deletes, and configures Windows services",
+    "reason": "Can delete, disable, or misconfigure any Windows service including system-critical ones"
+  },
+  {
+    "command": "Disable-NetAdapter",
+    "desc": "Disables a network adapter",
+    "reason": "Cuts network connectivity, potentially causing loss of remote access"
+  },
+  {
+    "command": "Set-NetFirewallRule",
+    "desc": "Modifies an existing Windows Firewall rule",
+    "reason": "Altering firewall rules can expose the system to network attacks"
+  },
+  {
+    "command": "New-NetFirewallRule",
+    "desc": "Creates a new Windows Firewall rule",
+    "reason": "Can open ports or allow inbound traffic, weakening system security"
+  },
+  {
+    "command": "Remove-NetFirewallRule",
+    "desc": "Deletes a Windows Firewall rule",
+    "reason": "Removing firewall rules exposes the system to previously blocked traffic"
+  },
+  {
+    "command": "netsh",
+    "desc": "CMD network configuration tool for firewall, IP, and interface settings",
+    "reason": "Can modify firewall policies, IP addresses, and proxy settings system-wide"
+  },
+  {
+    "command": "dism",
+    "desc": "Deployment Image Servicing and Management tool",
+    "reason": "Can add, remove, or corrupt Windows components and features"
+  },
+  {
+    "command": "Disable-WindowsOptionalFeature",
+    "desc": "Disables an optional Windows feature",
+    "reason": "Can disable features that other applications or the OS depends on"
+  },
+  {
+    "command": "wmic",
+    "desc": "WMI Command-line interface for system configuration and administration",
+    "reason": "Provides unrestricted access to hardware, processes, services, and system configuration"
+  },
+  {
+    "command": "sfc",
+    "desc": "System File Checker — scans and repairs protected system files",
+    "reason": "Can overwrite or restore system files, potentially causing instability if misused"
+  },
+  {
+    "command": "Clear-EventLog",
+    "desc": "Clears all entries from a Windows event log",
+    "reason": "Destroys security and audit logs, eliminating forensic evidence of prior activity"
+  },
+  {
+    "command": "Invoke-Command",
+    "desc": "Runs commands on local or remote computers via PowerShell remoting",
+    "reason": "Can execute arbitrary code on remote machines, enabling lateral movement"
+  },
+  {
+    "command": "Enable-PSRemoting",
+    "desc": "Configures the computer to receive PowerShell remote commands",
+    "reason": "Opens WinRM listener, exposing the system to remote command execution"
+  },
+  {
+    "command": "Disable-PSRemoting",
+    "desc": "Disables PowerShell remoting on the local computer",
+    "reason": "Can cut off legitimate remote management and monitoring access"
+  },
+  {
+    "command": "schtasks",
+    "desc": "CMD tool to create, modify, delete, and run scheduled tasks",
+    "reason": "Can establish persistent execution of arbitrary commands or scripts"
+  }
+]

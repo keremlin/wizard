@@ -1,0 +1,172 @@
+[
+  {
+    "command": "Remove-Item",
+    "desc": "Deletes files, folders, or registry keys",
+    "reason": "Can permanently delete files or directories; requires confirmation to avoid accidental data loss"
+  },
+  {
+    "command": "del",
+    "desc": "CMD command to delete one or more files",
+    "reason": "Deletes files without sending them to the Recycle Bin"
+  },
+  {
+    "command": "rd",
+    "desc": "CMD command to remove a directory",
+    "reason": "Can recursively delete entire directory trees"
+  },
+  {
+    "command": "rmdir",
+    "desc": "Alias for the CMD rd command",
+    "reason": "Can recursively delete entire directory trees"
+  },
+  {
+    "command": "Stop-Service",
+    "desc": "Stops a running Windows service",
+    "reason": "Stopping a service may disrupt dependent applications or system functions"
+  },
+  {
+    "command": "Restart-Service",
+    "desc": "Stops and then starts a Windows service",
+    "reason": "Briefly interrupts the service and any dependent functionality"
+  },
+  {
+    "command": "Start-Service",
+    "desc": "Starts a stopped or paused Windows service",
+    "reason": "Starting an unknown or third-party service may have unintended side effects"
+  },
+  {
+    "command": "Set-Service",
+    "desc": "Changes the startup type or description of a service",
+    "reason": "Altering startup type (e.g., to Disabled) can prevent the service from running on boot"
+  },
+  {
+    "command": "Stop-Process",
+    "desc": "Terminates one or more running processes",
+    "reason": "Can forcibly kill any process including system or application processes, causing data loss"
+  },
+  {
+    "command": "taskkill",
+    "desc": "CMD command to terminate processes by name or PID",
+    "reason": "Can kill any running process including critical background services"
+  },
+  {
+    "command": "Clear-Content",
+    "desc": "Deletes the content of a file without deleting the file itself",
+    "reason": "Irreversibly clears file contents; data cannot be recovered from the file"
+  },
+  {
+    "command": "Set-Content",
+    "desc": "Writes or replaces content in a file",
+    "reason": "Overwrites existing file content completely, causing data loss if used on the wrong file"
+  },
+  {
+    "command": "Add-Content",
+    "desc": "Appends content to a file",
+    "reason": "Can corrupt files if appended to binary or configuration files unintentionally"
+  },
+  {
+    "command": "Rename-Item",
+    "desc": "Renames a file, folder, or other item",
+    "reason": "Renaming system or application files can break functionality"
+  },
+  {
+    "command": "Move-Item",
+    "desc": "Moves a file or directory to a new location",
+    "reason": "Moving system or application files can break paths and cause application failure"
+  },
+  {
+    "command": "Remove-ScheduledTask",
+    "desc": "Deletes a scheduled task from the task scheduler",
+    "reason": "Permanently removes a task; may break automated maintenance or application routines"
+  },
+  {
+    "command": "Disable-ScheduledTask",
+    "desc": "Disables a scheduled task so it no longer runs automatically",
+    "reason": "Prevents scheduled maintenance or application tasks from executing"
+  },
+  {
+    "command": "Enable-WindowsOptionalFeature",
+    "desc": "Enables an optional Windows feature",
+    "reason": "Installing unexpected features may change system behavior or increase attack surface"
+  },
+  {
+    "command": "Uninstall-Package",
+    "desc": "Removes an installed software package",
+    "reason": "Uninstalling a package may remove software that other components depend on"
+  },
+  {
+    "command": "Remove-WindowsFeature",
+    "desc": "Removes a Windows Server role or feature",
+    "reason": "Can remove server roles that services or applications depend on"
+  },
+  {
+    "command": "Invoke-WebRequest",
+    "desc": "Downloads content from a URL (HTTP/HTTPS)",
+    "reason": "Can be used to download and save executable files or scripts from the internet"
+  },
+  {
+    "command": "curl",
+    "desc": "Transfers data from or to a server; alias for Invoke-WebRequest in PowerShell",
+    "reason": "Can download files or send data to external servers"
+  },
+  {
+    "command": "wget",
+    "desc": "Downloads files from the web; alias for Invoke-WebRequest in PowerShell",
+    "reason": "Can download files or scripts from external sources"
+  },
+  {
+    "command": "Start-Process",
+    "desc": "Starts one or more processes on the local computer",
+    "reason": "Can launch any executable, including scripts or programs with elevated privileges"
+  },
+  {
+    "command": "attrib",
+    "desc": "CMD command to display or change file attributes",
+    "reason": "Can hide files or mark them as system files, obscuring them from normal views"
+  },
+  {
+    "command": "icacls",
+    "desc": "CMD command to display or modify access control lists on files and folders",
+    "reason": "Changing file permissions can lock out users or grant unintended access"
+  },
+  {
+    "command": "takeown",
+    "desc": "CMD command to take ownership of a file or folder",
+    "reason": "Changing ownership of system files can compromise OS integrity"
+  },
+  {
+    "command": "cipher",
+    "desc": "CMD command to encrypt or decrypt files on NTFS volumes",
+    "reason": "Encrypting files without saving the key results in permanent data loss"
+  },
+  {
+    "command": "robocopy",
+    "desc": "CMD robust file copy tool with overwrite and delete capabilities",
+    "reason": "With certain flags can overwrite or delete destination files during sync operations"
+  },
+  {
+    "command": "xcopy",
+    "desc": "CMD extended copy command that can overwrite files silently",
+    "reason": "Can overwrite existing files at the destination without prompting"
+  },
+  {
+    "command": "Copy-Item",
+    "desc": "Copies a file, directory, or registry entry to another location",
+    "reason": "Can silently overwrite existing files at the destination"
+  },
+  {
+    "command": "erase",
+    "desc": "CMD alias for del, permanently deletes files",
+    "reason": "Deletes files without sending them to the Recycle Bin"
+  },
+  {
+    "command": "move",
+    "desc": "CMD command to move files or directories to another location",
+    "reason": "Can relocate important files, breaking application paths"
+  },
+  {
+    "command": "copy",
+    "desc": "CMD command to copy files to another location",
+    "reason": "Can silently overwrite existing files at the destination"
+  }
+]
